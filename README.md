@@ -44,11 +44,25 @@ npm install
 npm run dev                   # http://localhost:5173
 ```
 
-The frontend calls the backend at `/api`, which Vite proxies to
-`http://localhost:8080` in dev (no CORS setup needed).
+**Mock mode vs. real API.** By default the frontend runs in **mock mode**
+(`VITE_USE_MOCK=true` in `frontend/.env`) — it uses an in-browser localStorage
+store, so a fresh clone works immediately with **no backend or database**.
 
-> The frontend also ships with a built-in localStorage mock; set
-> `VITE_USE_MOCK=true` in a `frontend/.env.local` to run the UI with no backend.
+To make the frontend call the **real backend API** instead, create a gitignored
+`frontend/.env.local`:
+
+```bash
+# frontend/.env.local
+VITE_USE_MOCK=false
+VITE_API_BASE_URL=/api
+VITE_API_PROXY=http://localhost:8080
+```
+
+Then **restart `npm run dev`** (Vite only reads env files at startup) and make
+sure the backend is running. The frontend calls `/api`, which Vite proxies to
+`http://localhost:8080` in dev (no CORS setup needed). For a deployed frontend,
+set `VITE_API_BASE_URL` to the backend's public URL (e.g.
+`https://your-backend.onrender.com/api`).
 
 ---
 

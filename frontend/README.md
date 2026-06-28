@@ -25,16 +25,18 @@ npm run lint       # oxlint
 
 ### Connecting a real backend
 
-By default `VITE_USE_MOCK=true`. To use the real API:
+By default `VITE_USE_MOCK=true` (mock mode). To call the real backend, create a
+gitignored `frontend/.env.local`:
 
 ```bash
-# .env.local
+# frontend/.env.local
 VITE_USE_MOCK=false
 VITE_API_BASE_URL=/api
 VITE_API_PROXY=http://localhost:8080   # dev proxy target for /api
 ```
 
-See [.env.example](.env.example).
+Then **restart `npm run dev`** (Vite reads env files only at startup) and make
+sure the backend is running. See [.env.example](.env.example).
 
 ---
 
