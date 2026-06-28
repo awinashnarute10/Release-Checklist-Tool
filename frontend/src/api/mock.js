@@ -93,7 +93,7 @@ export const mockApi = {
     return found;
   },
 
-  async create({ name, date }) {
+  async create({ name, date, additionalInfo }) {
     await delay();
     const steps = emptyChecklist();
     const release = {
@@ -102,7 +102,7 @@ export const mockApi = {
       date,
       steps,
       status: deriveStatus(steps),
-      remarks: "",
+      remarks: additionalInfo ?? "",
       createdAt: nowIso(),
       updatedAt: nowIso(),
     };

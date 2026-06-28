@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Modal } from "./ui/Modal";
 import { Button } from "./ui/Button";
 import { Input } from "./ui/Input";
+import { Textarea } from "./ui/Textarea";
 
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
@@ -12,11 +13,13 @@ const todayIso = () => new Date().toISOString().slice(0, 10);
 export function ReleaseForm({ open, onClose, onSubmit, submitting = false }) {
   const [name, setName] = useState("");
   const [date, setDate] = useState(todayIso());
+  const [additionalInfo, setAdditionalInfo] = useState("");
   const [errors, setErrors] = useState({});
 
   const reset = () => {
     setName("");
     setDate(todayIso());
+    setAdditionalInfo("");
     setErrors({});
   };
 
@@ -38,7 +41,11 @@ export function ReleaseForm({ open, onClose, onSubmit, submitting = false }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    await onSubmit?.({ name: name.trim(), date });
+    await onSubmit?.({
+      name: name.trim(),
+      date,
+      additionalInfo: additionalInfo.trim() || null,
+    });
     reset();
   };
 
@@ -64,6 +71,14 @@ export function ReleaseForm({ open, onClose, onSubmit, submitting = false }) {
           value={date}
           onChange={(e) => setDate(e.target.value)}
           error={errors.date}
+        />
+        <Textarea
+          label="Additional information"
+          hint="Optional"
+          placeholder="Notes, links to the release ticket…"
+          value={additionalInfo}
+          rows={3}
+          onChange={(e) => setAdditionalInfo(e.target.value)}
         />
         <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
           <Button

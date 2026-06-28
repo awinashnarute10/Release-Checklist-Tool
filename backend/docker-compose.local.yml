@@ -1,0 +1,41 @@
+# Optional offline stack: app + a local PostgreSQL container. Useful for
+# developing without a hosted database.
+#
+#   docker compose -f docker-compose.local.yml up --build
+#
+# The explicit `environment` here points the app at the local `db` service and
+# intentionally overrides anything in `.env`.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: releasecheck-db
+    environment:
+      POSTGRES_DB: releasecheck
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d releasecheck"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: releasecheck-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/releasecheck
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      APP_CORS_ALLOWED_ORIGINS: http://localhost:5173,http://localhost:4173
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:

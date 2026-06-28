@@ -1,0 +1,16 @@
+# Primary stack: the app only. The database is hosted online (Neon / Supabase /
+# Railway / etc.) and its credentials come from `.env` (see .env.example).
+#
+#   cp .env.example .env   # then fill in your hosted DB details
+#   docker compose up --build
+#
+# For a fully offline setup with a local PostgreSQL container instead, use:
+#   docker compose -f docker-compose.local.yml up --build
+services:
+  app:
+    build: .
+    container_name: releasecheck-app
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
